@@ -1,0 +1,27 @@
+<div class="app-container">
+  <header class="app-header">
+    <div class="container">
+      <h1 class="app-title">
+        <span class="title-icon">🤖</span>
+        FlirtBot9000
+      </h1>
+      <p class="app-subtitle">AI-Powered Chat Interface</p>
+    </div>
+  </header>
+  
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <footer class="app-footer">
+    <div class="container">
+      <div class="flirt-hint-wrapper">
+        <p class="flirt-hint">💡 Flirt Hint: {{ randomHint }}</p>
+        <div class="hint-loader">
+          <div class="hint-loader-bar" [style.width]="progress + '%'">
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

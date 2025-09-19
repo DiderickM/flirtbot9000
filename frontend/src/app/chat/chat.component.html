@@ -1,0 +1,115 @@
+<div class="chat-container">
+  <!-- Language Selection Modal -->
+  <div class="language-selector" *ngIf="showLanguageSelector">
+    <div class="language-overlay" (click)="toggleLanguageSelector()"></div>
+    <div class="language-modal">
+      <div class="language-header">
+        <h3>🌍 Choose Your Flirting Language</h3>
+        <p>Select a language to practice your flirting skills!</p>
+      </div>
+      <div class="language-grid">
+        <button
+          *ngFor="let language of availableLanguages"
+          class="language-option"
+          (click)="selectLanguage(language.id)"
+          [class.selected]="language.id === selectedLanguage"
+        >
+          <div class="language-emoji">{{ language.emoji }}</div>
+          <div class="language-name">{{ language.name }}</div>
+          <div class="language-culture">{{ language.culture }}</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-header">
+    <div class="chat-info">
+      <h2>💕 FlirtBot9000</h2>
+      <div class="current-language" *ngIf="!showLanguageSelector">
+        <button class="language-badge" (click)="toggleLanguageSelector()">
+          {{ getCurrentLanguage()?.emoji || "🌍" }}
+          {{ getCurrentLanguage()?.name || "Select Language" }}
+          <span class="change-hint">Click to change</span>
+        </button>
+      </div>
+    </div>
+    <div class="chat-actions">
+      <button
+        class="btn btn-secondary"
+        (click)="clearChat()"
+        [disabled]="messages.length === 0"
+      >
+        🗑️ Clear Chat
+      </button>
+      <button
+        class="btn btn-secondary"
+        (click)="checkBackendHealth()"
+        [disabled]="isCheckingHealth"
+      >
+        {{ isCheckingHealth ? "🔄 Checking..." : "🔍 Check Health" }}
+      </button>
+    </div>
+  </div>
+
+  <div class="chat-messages" #chatMessages>
+    <div
+      *ngFor="let message of messages; trackBy: trackByMessageId"
+      class="message"
+      [ngClass]="{
+        'message-user': message.role === 'user',
+        'message-bot': message.role === 'assistant',
+        'fade-in': true
+      }"
+    >
+      <div class="message-avatar">
+        {{ message.role === "user" ? "👤" : "🤖" }}
+      </div>
+      <div class="message-content">
+        <div class="message-text">{{ message.content }}</div>
+        <div class="message-timestamp">
+          {{ message.timestamp | date : "shortTime" }}
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isTyping" class="message message-bot fade-in">
+      <div class="message-avatar">🤖</div>
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input-container">
+    <form (ngSubmit)="sendMessage()" class="chat-input-form">
+      <div class="input-group">
+        <input
+          type="text"
+          [(ngModel)]="currentMessage"
+          name="messageInput"
+          class="form-control chat-input"
+          placeholder="Type your message here..."
+          [disabled]="isTyping"
+          autocomplete="off"
+        />
+        <button
+          type="submit"
+          class="btn btn-primary send-button"
+          [disabled]="!currentMessage.trim() || isTyping"
+        >
+          {{ isTyping ? "⏳" : "📤" }}
+        </button>
+      </div>
+    </form>
+
+    <div class="input-footer">
+      <small class="text-muted">
+        Press Enter to send • {{ messages.length }} messages
+      </small>
+    </div>
+  </div>
+</div>
